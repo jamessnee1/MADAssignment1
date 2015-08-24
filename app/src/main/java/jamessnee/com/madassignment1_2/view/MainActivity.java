@@ -20,6 +20,11 @@ import jamessnee.com.madassignment1_2.model.Movie;
 
 public class MainActivity extends ActionBarActivity {
 
+    //movie vars
+    private TextView rating;
+    private ArrayAdapter<Movie> adapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,9 +37,18 @@ public class MainActivity extends ActionBarActivity {
 
     private void populateListView(){
 
-        ArrayAdapter<Movie> adapter = new MyListAdapter();
+        adapter = new MyListAdapter();
         ListView list = (ListView) findViewById(R.id.listViewMain);
         list.setAdapter(adapter);
+
+    }
+
+    //onResume refresh the listView
+    public void onResume() {
+        super.onResume();
+
+        //populate the listview with updated data
+        populateListView();
 
     }
 
@@ -73,6 +87,7 @@ public class MainActivity extends ActionBarActivity {
                     detailIntent.putExtra("moviePoster", clickedMovie.getPoster());
                     detailIntent.putExtra("movieRating", clickedMovie.getRating());
                     detailIntent.putExtra("movieID", clickedMovie.getId());
+                    detailIntent.putExtra("position", position);
                     startActivity(detailIntent);
 
                 }
@@ -97,12 +112,12 @@ public class MainActivity extends ActionBarActivity {
             year.setText(String.valueOf(currentMovie.getYear()));
 
             //fill rating
-            TextView rating = (TextView)itemView.findViewById(R.id.ratingText);
+            rating = (TextView)itemView.findViewById(R.id.ratingText);
             rating.setText("Rating: " + currentMovie.getRating() + "/5 Stars");
 
             //RatingBar
             RatingBar ratingBar = (RatingBar)itemView.findViewById(R.id.listRatingBar);
-            ratingBar.setRating((int)currentMovie.getRating());
+            ratingBar.setRating((int) currentMovie.getRating());
 
             ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
                 @Override
@@ -111,17 +126,24 @@ public class MainActivity extends ActionBarActivity {
                     ratingBar.setRating((int) rating);
                     currentMovie.setRating((int) rating);
 
+
                     //add to model
-                    AppData.getInstance().setMovie(currentMovie.getId(), currentMovie);
+                    //AppData.getInstance().setMovie(currentMovie.getId(), currentMovie);
+                    AppData.getInstance().getMovie(position).setRating((int) rating);
+                    Toast.makeText(getApplicationContext(), "The rating was changed to " +
+                            AppData.getInstance().getMovie(position).getRating(), Toast.LENGTH_SHORT).show();
 
 
                 }
             });
 
 
+
             return itemView;
 
         }
+
+
     }
 
 

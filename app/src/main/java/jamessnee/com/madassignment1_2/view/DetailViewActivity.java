@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -32,6 +33,7 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
     private int yearValue;
     private int posterValue;
     private int ratingValue;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,8 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
         posterValue = intent.getIntExtra("moviePoster", 0);
         ratingValue = intent.getIntExtra("movieRating", 0);
         movieIDValue = intent.getStringExtra("movieID");
+        position = intent.getIntExtra("position", position);
+
 
         //set values to display
         TextView displayText = (TextView)findViewById(R.id.titleDisplay);
@@ -89,13 +93,9 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
     public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
 
         ratingBar.setRating((int) rating);
-
-        //create new movie object from variables
-        Movie currentMovie = new Movie(titleValue, yearValue, shortPlotValue, descValue, posterValue, movieIDValue, (int)rating);
-        currentMovie.setRating((int) rating);
-
-        //add to model
-        AppData.getInstance().setMovie(currentMovie.getId(), currentMovie);
+        AppData.getInstance().getMovie(position).setRating((int) rating);
+        Toast.makeText(getApplicationContext(), "The rating was changed to " +
+                AppData.getInstance().getMovie(position).getRating(), Toast.LENGTH_SHORT).show();
 
 
     }
