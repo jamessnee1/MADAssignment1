@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MADAssignment1_2</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_detail_view">Movie Details</string>
+</resources>
