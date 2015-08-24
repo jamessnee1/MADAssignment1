@@ -20,7 +20,7 @@
         android:layout_toEndOf="@+id/posterView"
         android:layout_toRightOf="@+id/posterView"
         android:gravity="center"
-        android:text="title shown here"
+        android:text="@string/titlePlaceholder"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ImageView
@@ -35,7 +35,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/posterView"
-        android:text="year shown here"
+        android:text="@string/yearPlaceholder"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 
@@ -63,7 +63,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Schedule a party"
+        android:text="@string/schedulePartyButton"
         android:id="@+id/partyButton"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
@@ -76,7 +76,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="20dp"
         android:paddingBottom="100dp"
-        android:text="moviedesc shown here"
+        android:text="@string/movieDescPlaceholder"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_below="@+id/yearView"
         android:layout_alignParentLeft="true"

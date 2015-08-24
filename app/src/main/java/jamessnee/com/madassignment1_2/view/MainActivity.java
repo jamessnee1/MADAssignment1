@@ -23,6 +23,7 @@ public class MainActivity extends ActionBarActivity {
     //movie vars
     private TextView rating;
     private ArrayAdapter<Movie> adapter;
+    private ListView list;
 
 
     @Override
@@ -38,7 +39,7 @@ public class MainActivity extends ActionBarActivity {
     private void populateListView(){
 
         adapter = new MyListAdapter();
-        ListView list = (ListView) findViewById(R.id.listViewMain);
+        list = (ListView) findViewById(R.id.listViewMain);
         list.setAdapter(adapter);
 
     }
@@ -48,7 +49,8 @@ public class MainActivity extends ActionBarActivity {
         super.onResume();
 
         //populate the listview with updated data
-        populateListView();
+        list.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
     }
 
