@@ -9,6 +9,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="jamessnee.com.madassignment1.DetailViewActivity">
 
+
+
     <TextView
         android:id="@+id/titleDisplay"
         android:layout_width="wrap_content"
@@ -26,7 +28,10 @@
     <ImageView
         android:id="@+id/posterView"
         android:layout_width="100dp"
-        android:layout_height="150dp" />
+        android:layout_height="150dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:id="@+id/yearView"
@@ -40,12 +45,26 @@
 
 
     <ScrollView
-        android:id="@+id/scrollView"
+        android:id="@+id/descScrollView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/yearView"
+        android:layout_below="@+id/detailRatingBar"
         android:layout_centerHorizontal="true"
-        android:paddingBottom="100dp">
+        android:paddingBottom="100dp"
+        >
+
+        <TextView
+            android:id="@+id/movieDescText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:paddingBottom="100dp"
+            android:text="@string/movieDescPlaceholder"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@+id/yearView"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="37dp" />
 
     </ScrollView>
 
@@ -61,26 +80,13 @@
         />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
         android:text="@string/schedulePartyButton"
         android:id="@+id/partyButton"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:onClick="scheduleAPartyButtonPressed"/>
+        android:layout_alignParentStart="true" />
 
-    <TextView
-        android:id="@+id/movieDescText"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="20dp"
-        android:paddingBottom="100dp"
-        android:text="@string/movieDescPlaceholder"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_below="@+id/yearView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="37dp" />
 
 </RelativeLayout>

@@ -9,6 +9,7 @@ import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -64,6 +65,17 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
         displayPoster.setImageResource(posterValue);
         rating.setRating((int) ratingValue);
 
+        //Get button from UI
+        Button schedulePartyButton = (Button)findViewById(R.id.partyButton);
+        //Set onClickListener
+        schedulePartyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                createPartyDialog();
+            }
+        });
+
 
     }
 
@@ -100,44 +112,54 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
 
     }
 
-    public void scheduleAPartyButtonPressed(View view) {
+    //method to create party dialog
+    public void createPartyDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Schedule a party - " + titleValue);
 
-        //set layout
+        builder.setCancelable(false);
+        builder.setTitle("Schedule a party");
+
+        //party date
+        final TextView partyDateTitle = new TextView(this);
+        partyDateTitle.setText("Enter party date");
+        final EditText partyDate = new EditText(this);
+
+        //party venue
+        final TextView partyVenueTitle = new TextView(this);
+        partyVenueTitle.setText("Enter party venue:");
+        final EditText partyVenue = new EditText(this);
+
+        //party location
+        final TextView partyLocationTitle = new TextView(this);
+        partyLocationTitle.setText("Enter party location:");
+        final EditText partyLocation = new EditText(this);
+
+        //add contacts
+        final TextView partyInviteesTitle = new TextView(this);
+        partyInviteesTitle.setText("Party Invitees:");
+
+        partyDate.setInputType(InputType.TYPE_CLASS_TEXT);
+        partyVenue.setInputType(InputType.TYPE_CLASS_TEXT);
+        partyLocation.setInputType(InputType.TYPE_CLASS_TEXT);
+
+
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
-
+        layout.addView(partyDateTitle);
+        layout.addView(partyDate);
+        layout.addView(partyVenueTitle);
+        layout.addView(partyVenue);
+        layout.addView(partyLocationTitle);
+        layout.addView(partyLocation);
+        layout.addView(partyInviteesTitle);
         builder.setView(layout);
 
-        //setup inputs
-        final TextView dateAndTimeTitle = new TextView(this);
-        dateAndTimeTitle.setText("Enter a Date and Time:");
-        layout.addView(dateAndTimeTitle);
-        final EditText dateAndTimeInput = new EditText(this);
-        dateAndTimeInput.setInputType(InputType.TYPE_CLASS_DATETIME);
-        layout.addView(dateAndTimeInput);
-
-        final TextView venueTitle = new TextView(this);
-        venueTitle.setText("Enter a venue:");
-        layout.addView(venueTitle);
-        final EditText venueInput = new EditText(this);
-        venueInput.setInputType(InputType.TYPE_CLASS_TEXT);
-        layout.addView(venueInput);
-
-        final TextView locationTitle = new TextView(this);
-        locationTitle.setText("Enter a party location (Latitude and Longitude):");
-        layout.addView(locationTitle);
-        final EditText locationInput = new EditText(this);
-        locationInput.setInputType(InputType.TYPE_CLASS_TEXT);
-        layout.addView(locationInput);
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //save all data into model, eg
-                //String inputText = dateAndTimeInput.getText().toString();
+                //save data here
             }
         });
 
@@ -151,4 +173,5 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
         builder.show();
 
     }
+
 }

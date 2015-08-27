@@ -10,4 +10,7 @@
     <string name="movieDescPlaceholder">moviedesc shown here</string>
     <string name="shortPlotPlaceholder">short plot shown here</string>
     <string name="ratingPlaceholder">Rating: /5 Stars</string>
+    <string name="partyDate">Party Date:</string>
+    <string name="partyVenue">Party Venue:</string>
+    <string name="partyLocation">Party Location:</string>
 </resources>

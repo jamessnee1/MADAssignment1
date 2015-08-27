@@ -45,7 +45,7 @@ public class AppData {
         return movies.get(position);
     }
 
-    
+
     //set specific movie
     public void setMovie(String movieId, Movie mov) {
 
