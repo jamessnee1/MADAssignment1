@@ -1,24 +1,32 @@
 package jamessnee.com.madassignment1_2.view;
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import jamessnee.com.madassignment1_2.R;
@@ -59,6 +67,7 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
         TextView descView = (TextView)findViewById(R.id.movieDescText);
         ImageView displayPoster = (ImageView)findViewById(R.id.posterView);
         RatingBar rating = (RatingBar)findViewById(R.id.detailRatingBar);
+        rating.setStepSize(1);
         displayText.setText(titleValue);
         yearView.setText(String.valueOf(yearValue));
         descView.setText(descValue);
@@ -120,10 +129,20 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
         builder.setCancelable(false);
         builder.setTitle("Schedule a party");
 
-        //party date
+        //party date picker
         final TextView partyDateTitle = new TextView(this);
-        partyDateTitle.setText("Enter party date");
-        final EditText partyDate = new EditText(this);
+        partyDateTitle.setText("Enter party date:");
+
+        DatePicker date = new DatePicker(this);
+        date.setCalendarViewShown(false);
+        date.setSpinnersShown(true);
+        GregorianCalendar cal = new GregorianCalendar(date.getYear(), date.getMonth(), date.getDayOfMonth());
+
+
+        //party date
+        final TextView partyTimeTitle = new TextView(this);
+        partyTimeTitle.setText("Enter party time");
+        final EditText partyTime = new EditText(this);
 
         //party venue
         final TextView partyVenueTitle = new TextView(this);
@@ -139,7 +158,38 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
         final TextView partyInviteesTitle = new TextView(this);
         partyInviteesTitle.setText("Party Invitees:");
 
-        partyDate.setInputType(InputType.TYPE_CLASS_TEXT);
+        //get all email addresses on device
+        ArrayList<String> emails = new ArrayList<String>();
+
+        ContentResolver cr = getContentResolver();
+        String id = null, email = null;
+        //Cursor emailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+        //        null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{ id }, null);
+
+        email = "unknown";
+
+        //while(emailCur.moveToNext()){
+
+          //  email = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+
+            if (email == null){
+                email = "unknown";
+            }
+
+            //add to array
+            emails.add(email);
+
+       // }
+
+//        emailCur.close();
+
+        Spinner emailSpinner = new Spinner(this);
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, emails);
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        emailSpinner.setAdapter(spinnerArrayAdapter);
+
+
+        partyTime.setInputType(InputType.TYPE_CLASS_DATETIME);
         partyVenue.setInputType(InputType.TYPE_CLASS_TEXT);
         partyLocation.setInputType(InputType.TYPE_CLASS_TEXT);
 
@@ -147,12 +197,15 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.addView(partyDateTitle);
-        layout.addView(partyDate);
+        layout.addView(date);
+        layout.addView(partyTimeTitle);
+        layout.addView(partyTime);
         layout.addView(partyVenueTitle);
         layout.addView(partyVenue);
         layout.addView(partyLocationTitle);
         layout.addView(partyLocation);
         layout.addView(partyInviteesTitle);
+        layout.addView(emailSpinner);
         builder.setView(layout);
 
 

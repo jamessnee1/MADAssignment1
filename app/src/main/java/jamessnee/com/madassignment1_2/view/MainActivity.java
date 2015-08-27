@@ -13,6 +13,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import jamessnee.com.madassignment1_2.R;
 import jamessnee.com.madassignment1_2.model.AppData;
 import jamessnee.com.madassignment1_2.model.Movie;
@@ -38,6 +40,7 @@ public class MainActivity extends ActionBarActivity {
 
     private void populateListView(){
 
+
         adapter = new MyListAdapter();
         list = (ListView) findViewById(R.id.listViewMain);
         list.setAdapter(adapter);
@@ -48,9 +51,7 @@ public class MainActivity extends ActionBarActivity {
     public void onResume() {
         super.onResume();
 
-        //populate the listview with updated data
-        list.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        populateListView();
 
     }
 
@@ -113,20 +114,25 @@ public class MainActivity extends ActionBarActivity {
             TextView year = (TextView)itemView.findViewById(R.id.item_year);
             year.setText(String.valueOf(currentMovie.getYear()));
 
+            //RatingBar
+            RatingBar ratingBar = (RatingBar)itemView.findViewById(R.id.listRatingBar);
+            ratingBar.setRating((int) currentMovie.getRating());
+            ratingBar.setStepSize(1);
+
             //fill rating
             rating = (TextView)itemView.findViewById(R.id.ratingText);
             rating.setText("Rating: " + currentMovie.getRating() + "/5 Stars");
 
-            //RatingBar
-            RatingBar ratingBar = (RatingBar)itemView.findViewById(R.id.listRatingBar);
-            ratingBar.setRating((int) currentMovie.getRating());
+
 
             ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
                 @Override
                 public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
 
                     ratingBar.setRating((int) rating);
+                    AppData.getInstance().getMovie(position).setRating((int) rating);
                     currentMovie.setRating((int) rating);
+
 
 
                     //add to model
