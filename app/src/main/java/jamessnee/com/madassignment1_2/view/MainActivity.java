@@ -50,9 +50,6 @@ public class MainActivity extends ActionBarActivity {
     public void onResume() {
         super.onResume();
 
-        adapter.notifyDataSetChanged();
-        list.setAdapter(adapter);
-
 
     }
 
@@ -134,6 +131,10 @@ public class MainActivity extends ActionBarActivity {
                     //add to model
                     AppData.getInstance().getMovie(position).setRating((int) rating);
                     currentMovie.setRating((int) rating);
+
+                    //update list here
+
+
                     Toast.makeText(getApplicationContext(), "The rating was changed to " +
                             AppData.getInstance().getMovie(position).getRating(), Toast.LENGTH_SHORT).show();
 

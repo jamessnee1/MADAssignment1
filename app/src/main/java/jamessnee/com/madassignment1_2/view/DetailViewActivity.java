@@ -96,6 +96,22 @@ public class DetailViewActivity extends ActionBarActivity {
             }
         });
 
+        //share button
+        Button shareButton = (Button)findViewById(R.id.shareButton);
+        //set onClickListener
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("plain/text");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "My favourite movie is "
+                        + titleValue + ". " + descValue);
+                startActivity(Intent.createChooser(shareIntent, "Share using: "));
+
+            }
+        });
+
         //ratingbar changed listener
         rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override

@@ -5,4 +5,6 @@ Device tested/developed on: Lenovo TAB 2 A7, Android 4.4 Kitkat/Android 5.0 Loll
 
 Schedule a Party makes a dialog pop up and the user can enter all details here, when OK is pressed this information will be saved to the model. (Each movie has exactly one party associated with it)
 
+Extra feature: Share to email/other services.
+
 Known bugs: Main activity ListView will not refresh Rating properly.
