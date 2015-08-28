@@ -17,9 +17,10 @@ public class Movie {
     private int poster;
     private String id;
     private int rating;
+    private Party party;
 
 
-    public Movie(String title, int year, String short_plot, String full_plot, int poster, String id, int rating) {
+    public Movie(String title, int year, String short_plot, String full_plot, int poster, String id, int rating, Party party) {
 
         super();
 
@@ -30,6 +31,7 @@ public class Movie {
         this.poster = poster;
         this.id = id;
         this.rating = rating;
+        this.party = party;
 
     }
 
@@ -59,8 +61,13 @@ public class Movie {
 
     public int getRating() { return rating; }
 
+    public Party getParty() { return party; }
+
     //setter for rating
     public void setRating(int rating) {
         this.rating = rating;
     }
+
+    //setter for party
+    public void setParty(Party party) { this.party = party; }
 }

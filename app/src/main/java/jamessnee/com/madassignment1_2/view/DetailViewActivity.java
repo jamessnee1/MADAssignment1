@@ -1,10 +1,13 @@
 package jamessnee.com.madassignment1_2.view;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -12,12 +15,15 @@ import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -29,9 +35,12 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.net.ssl.CertPathTrustManagerParameters;
+
 import jamessnee.com.madassignment1_2.R;
 import jamessnee.com.madassignment1_2.model.AppData;
 import jamessnee.com.madassignment1_2.model.Movie;
+import jamessnee.com.madassignment1_2.model.Party;
 
 public class DetailViewActivity extends ActionBarActivity implements RatingBar.OnRatingBarChangeListener {
 
@@ -133,11 +142,9 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
         final TextView partyDateTitle = new TextView(this);
         partyDateTitle.setText("Enter party date:");
 
-        DatePicker date = new DatePicker(this);
+        final DatePicker date = new DatePicker(this);
         date.setCalendarViewShown(false);
         date.setSpinnersShown(true);
-        GregorianCalendar cal = new GregorianCalendar(date.getYear(), date.getMonth(), date.getDayOfMonth());
-
 
         //party date
         final TextView partyTimeTitle = new TextView(this);
@@ -156,37 +163,55 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
 
         //add contacts
         final TextView partyInviteesTitle = new TextView(this);
-        partyInviteesTitle.setText("Party Invitees:");
+        partyInviteesTitle.setText("Party Invitees - Select invitees and they will be added to list below:");
 
         //get all email addresses on device
-        ArrayList<String> emails = new ArrayList<String>();
+        ArrayList<String>emails = getEmailAddresses();
 
-        ContentResolver cr = getContentResolver();
-        String id = null, email = null;
-        //Cursor emailCur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-        //        null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{ id }, null);
+        //new array for saving selected email addresses
+        final ArrayList<String>selectedEmails = new ArrayList<String>();
 
-        email = "unknown";
+        //create listview to display chosen email addresses under spinner
+        final ListView emailList = new ListView(this);
+        final ArrayAdapter<String> emailsArrayAdapter = new ArrayAdapter<String>
+                (this, android.R.layout.simple_list_item_1, android.R.id.text1, selectedEmails);
+        
 
-        //while(emailCur.moveToNext()){
+        //spinner for choosing email addresses
+        final Spinner emailSpinner = new Spinner(this);
+        final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>
+                (this, android.R.layout.simple_spinner_item, emails);
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        emailSpinner.setAdapter(spinnerArrayAdapter);
 
-          //  email = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+        //onItemSelectedListener
+        emailSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-            if (email == null){
-                email = "unknown";
+                //save string of selected item and add it to the array of emails for display
+                String selectedEmail = emailSpinner.getSelectedItem().toString();
+                selectedEmails.add(selectedEmail);
+                //update list
+                emailList.setAdapter(emailsArrayAdapter);
+
             }
 
-            //add to array
-            emails.add(email);
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-       // }
+            }
+        });
 
-//        emailCur.close();
-
-        Spinner emailSpinner = new Spinner(this);
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, emails);
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        emailSpinner.setAdapter(spinnerArrayAdapter);
+        //selected emails list onItemClicked Listener, will delete emails from the list
+        emailList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectedEmails.remove(position);
+                //update list
+                emailList.setAdapter(emailsArrayAdapter);
+            }
+        });
 
 
         partyTime.setInputType(InputType.TYPE_CLASS_DATETIME);
@@ -206,13 +231,25 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
         layout.addView(partyLocation);
         layout.addView(partyInviteesTitle);
         layout.addView(emailSpinner);
+        layout.addView(emailList);
         builder.setView(layout);
 
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 //save data here
+                //create new party and add data to it
+                GregorianCalendar partyDate = new GregorianCalendar(date.getYear(), date.getMonth(), date.getDayOfMonth());
+                String time = partyTime.getText().toString();
+                String venue = partyVenue.getText().toString();
+                String location = partyLocation.getText().toString();
+                Party party = new Party(partyDate, time, venue, location, null);
+
+                //set party to corresponding movie
+                AppData.getInstance().getMovie(position).setParty(party);
+
             }
         });
 
@@ -225,6 +262,41 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
 
         builder.show();
 
+    }
+
+    //method to pull email addresses from device
+    public ArrayList<String> getEmailAddresses() {
+
+        ArrayList<String> emails = new ArrayList<String>();
+
+        ContentResolver cr = getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+
+        if (cur.getCount() > 0){
+
+            while(cur.moveToNext()){
+                String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+
+                Cursor cur1 = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                        new String[]{id}, null);
+
+                while(cur1.moveToNext()){
+                    //get contact emails
+                    String email = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+
+                    if (email != null){
+                        emails.add(email);
+                    }
+                }
+
+                cur1.close();
+            }
+
+        }
+
+        cur.close();
+        return emails;
     }
 
 }
