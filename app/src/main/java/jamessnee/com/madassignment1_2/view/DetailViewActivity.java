@@ -32,6 +32,7 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -42,7 +43,7 @@ import jamessnee.com.madassignment1_2.model.AppData;
 import jamessnee.com.madassignment1_2.model.Movie;
 import jamessnee.com.madassignment1_2.model.Party;
 
-public class DetailViewActivity extends ActionBarActivity implements RatingBar.OnRatingBarChangeListener {
+public class DetailViewActivity extends ActionBarActivity {
 
     private String movieIDValue;
     private String titleValue;
@@ -59,6 +60,7 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
         setContentView(R.layout.activity_detail_view);
 
         //extract extra values from intent for display on the DetailView
+        //For assignment 2, we could get these directly from the AppData
         Intent intent = getIntent();
         titleValue = intent.getStringExtra("movieTitle");
         descValue = intent.getStringExtra("movieDesc");
@@ -94,6 +96,19 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
             }
         });
 
+        //ratingbar changed listener
+        rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+
+                ratingBar.setRating((int) rating);
+                AppData.getInstance().getMovie(position).setRating((int) rating);
+                Toast.makeText(getApplicationContext(), "The rating was changed to " +
+                        AppData.getInstance().getMovie(position).getRating(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
 
     }
 
@@ -117,17 +132,6 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-
-        ratingBar.setRating((int) rating);
-        AppData.getInstance().getMovie(position).setRating((int) rating);
-        Toast.makeText(getApplicationContext(), "The rating was changed to " +
-                AppData.getInstance().getMovie(position).getRating(), Toast.LENGTH_SHORT).show();
-
-
     }
 
     //method to create party dialog
@@ -163,10 +167,14 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
 
         //add contacts
         final TextView partyInviteesTitle = new TextView(this);
-        partyInviteesTitle.setText("Party Invitees - Select invitees and they will be added to list below:");
+        partyInviteesTitle.setText("Party Invitees - Select invitees and they will be added to list below.");
+        final TextView partyInviteesTitle2 = new TextView(this);
+        partyInviteesTitle2.setText("To remove an invitee, tap their email address on the list below.");
 
         //get all email addresses on device
         ArrayList<String>emails = getEmailAddresses();
+        //sort by alphabetical
+        Collections.sort(emails);
 
         //new array for saving selected email addresses
         final ArrayList<String>selectedEmails = new ArrayList<String>();
@@ -175,7 +183,7 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
         final ListView emailList = new ListView(this);
         final ArrayAdapter<String> emailsArrayAdapter = new ArrayAdapter<String>
                 (this, android.R.layout.simple_list_item_1, android.R.id.text1, selectedEmails);
-        
+
 
         //spinner for choosing email addresses
         final Spinner emailSpinner = new Spinner(this);
@@ -230,12 +238,13 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
         layout.addView(partyLocationTitle);
         layout.addView(partyLocation);
         layout.addView(partyInviteesTitle);
+        layout.addView(partyInviteesTitle2);
         layout.addView(emailSpinner);
         layout.addView(emailList);
         builder.setView(layout);
 
-
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -245,13 +254,14 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
                 String time = partyTime.getText().toString();
                 String venue = partyVenue.getText().toString();
                 String location = partyLocation.getText().toString();
-                Party party = new Party(partyDate, time, venue, location, null);
+                Party party = new Party(partyDate, time, venue, location, selectedEmails);
 
                 //set party to corresponding movie
                 AppData.getInstance().getMovie(position).setParty(party);
 
             }
         });
+
 
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
@@ -260,7 +270,9 @@ public class DetailViewActivity extends ActionBarActivity implements RatingBar.O
             }
         });
 
-        builder.show();
+        
+        AlertDialog dialog = builder.create();
+        dialog.show();
 
     }
 

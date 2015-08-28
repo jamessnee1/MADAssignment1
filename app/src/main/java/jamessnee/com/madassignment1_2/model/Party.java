@@ -1,5 +1,6 @@
 package jamessnee.com.madassignment1_2.model;
 
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
 /**
@@ -11,10 +12,10 @@ public class Party {
     private String partyTime;
     private String partyVenue;
     private String partyLocationLatLng;
-    private String[] partyInvitees;
+    private ArrayList<String> partyInvitees;
 
 
-    public Party(GregorianCalendar partyDate, String partyTime, String partyVenue, String partyLocationLatLng, String[] partyInvitees) {
+    public Party(GregorianCalendar partyDate, String partyTime, String partyVenue, String partyLocationLatLng, ArrayList<String> partyInvitees) {
         this.partyDate = partyDate;
         this.partyTime = partyTime;
         this.partyVenue = partyVenue;
@@ -51,11 +52,11 @@ public class Party {
         this.partyLocationLatLng = partyLocationLatLng;
     }
 
-    public String[] getPartyInvitees() {
+    public ArrayList<String> getPartyInvitees() {
         return partyInvitees;
     }
 
-    public void setPartyInvitees(String[] partyInvitees) {
+    public void setPartyInvitees(ArrayList<String> partyInvitees) {
         this.partyInvitees = partyInvitees;
     }
 

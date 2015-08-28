@@ -40,7 +40,6 @@ public class MainActivity extends ActionBarActivity {
 
     private void populateListView(){
 
-
         adapter = new MyListAdapter();
         list = (ListView) findViewById(R.id.listViewMain);
         list.setAdapter(adapter);
@@ -51,7 +50,9 @@ public class MainActivity extends ActionBarActivity {
     public void onResume() {
         super.onResume();
 
-        populateListView();
+        adapter.notifyDataSetChanged();
+        list.setAdapter(adapter);
+
 
     }
 
@@ -130,14 +131,9 @@ public class MainActivity extends ActionBarActivity {
                 public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
 
                     ratingBar.setRating((int) rating);
+                    //add to model
                     AppData.getInstance().getMovie(position).setRating((int) rating);
                     currentMovie.setRating((int) rating);
-
-
-
-                    //add to model
-                    //AppData.getInstance().setMovie(currentMovie.getId(), currentMovie);
-                    AppData.getInstance().getMovie(position).setRating((int) rating);
                     Toast.makeText(getApplicationContext(), "The rating was changed to " +
                             AppData.getInstance().getMovie(position).getRating(), Toast.LENGTH_SHORT).show();
 
