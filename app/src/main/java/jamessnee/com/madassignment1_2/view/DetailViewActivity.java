@@ -270,7 +270,7 @@ public class DetailViewActivity extends ActionBarActivity {
             }
         });
 
-        
+
         AlertDialog dialog = builder.create();
         dialog.show();
 
@@ -279,11 +279,13 @@ public class DetailViewActivity extends ActionBarActivity {
     //method to pull email addresses from device
     public ArrayList<String> getEmailAddresses() {
 
+        //new storage for emails
         ArrayList<String> emails = new ArrayList<String>();
 
         ContentResolver cr = getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 
+        //cursor traversal of list
         if (cur.getCount() > 0){
 
             while(cur.moveToNext()){
@@ -297,6 +299,7 @@ public class DetailViewActivity extends ActionBarActivity {
                     //get contact emails
                     String email = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
 
+                    //if email isnt null, add to emails list
                     if (email != null){
                         emails.add(email);
                     }
