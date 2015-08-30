@@ -40,11 +40,14 @@ public class MainActivity extends ActionBarActivity {
 
     private void populateListView(){
 
+        //setup initial adapter with Movie list
         adapter = new MyListAdapter();
         list = (ListView) findViewById(R.id.listViewMain);
         list.setAdapter(adapter);
 
+
     }
+
 
     //onResume refresh the listView
     public void onResume() {
@@ -132,7 +135,9 @@ public class MainActivity extends ActionBarActivity {
                     AppData.getInstance().getMovie(position).setRating((int) rating);
                     currentMovie.setRating((int) rating);
 
-                    //update list here
+                    //refresh list to reflect new rating
+
+
 
 
                     Toast.makeText(getApplicationContext(), "The rating was changed to " +

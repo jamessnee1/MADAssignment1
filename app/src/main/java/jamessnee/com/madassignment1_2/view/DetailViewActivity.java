@@ -106,7 +106,7 @@ public class DetailViewActivity extends ActionBarActivity {
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("plain/text");
                 shareIntent.putExtra(Intent.EXTRA_TEXT, "My favourite movie is "
-                        + titleValue + ". " + descValue);
+                        + titleValue + ". " + descValue + ". The rating I gave it was " + ratingValue);
                 startActivity(Intent.createChooser(shareIntent, "Share using: "));
 
             }
